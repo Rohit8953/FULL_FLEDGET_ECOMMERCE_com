@@ -20,7 +20,7 @@ app.use(express.urlencoded({
   app.use(cookieParser());
   
   const corsOption={
-      origin:"http://localhost:3000",
+      origin:"https://full-fledget-ecommerce-com-tq62.vercel.app",
       credentials:true
   }
   app.use(cors(corsOption))
