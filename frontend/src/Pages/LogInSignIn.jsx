@@ -279,7 +279,7 @@ const LogInSignIn = () => {
             )}{" "}
             <div
               onClick={() => setloginhai(!loginhai)}
-              className=" cursor-pointer text-black-600 hover:text-red-700 hover:underline"
+              className=" cursor-pointer text-black-600 hover:text-blue-700 hover:underline"
             >
               {!loginhai ? <p>SignUp</p> : <p>Login</p>}
             </div>
