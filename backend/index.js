@@ -21,6 +21,7 @@ app.use(express.urlencoded({
   
   const corsOption={
       origin:"https://full-fledget-ecommerce-com-tq62.vercel.app",
+      methods: "*",
       credentials:true
   }
   app.use(cors(corsOption))
