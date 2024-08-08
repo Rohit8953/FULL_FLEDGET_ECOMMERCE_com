@@ -45,5 +45,5 @@ dbconnection();//fxn call;
 // default Route
 
 app.get("/",(req,res)=>{
-    res.send('Aur rohit bhai kaise ho asx app abhi Ghar kab a rahe ho');
+    res.send('Backend code running successfuly');
 });
