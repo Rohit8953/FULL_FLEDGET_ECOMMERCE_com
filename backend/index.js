@@ -19,20 +19,24 @@ app.use(express.urlencoded({
   }))
   app.use(cookieParser());
   
-  const corsOption={
-      origin:"https://full-fledget-ecommerce-com-tq62.vercel.app",
-      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-      credentials:true
-  }
-  app.use(cors(corsOption))
-const routs=require('./routes/routs')
-app.use('/api/v1',routs)
+  const corsOption = {
+  origin: ["http://localhost:3000", "https://full-fledget-ecommerce-com-tq62.vercel.app", "https://full-fledget-ecommerce-com.vercel.app"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
 
-// app.get("/", (req, res) => {
-// app.use(express.static(path.resolve(__dirname, "frontend", "build")));
-// res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
-// });
+app.use(cors(corsOption));
+const routs = require("./routes/routs");
+app.use("/api/v1", routs);
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin); // Dynamically set origin
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
   
 app.listen(porthai,()=>{
     console.log(`app listening on port no..http://localhost:${porthai}`);
@@ -45,5 +49,5 @@ dbconnection();//fxn call;
 // default Route
 
 app.get("/",(req,res)=>{
-    res.send('Backend code running successfuly');
+    res.send('Backend code running successfuly--');
 });
