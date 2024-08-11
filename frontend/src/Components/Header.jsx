@@ -15,7 +15,6 @@ const Header = () => {
   const [search, setSearch] = useState();
   const [rotate, setrotate] = useState(true);
 
-  console.log("search", search);
   const dispatch = useDispatch();
   const userdetails = useSelector((store) => store.userdetails.user);
 
@@ -32,10 +31,15 @@ const Header = () => {
       navigate("/search");
     }
   };
-  const logouthandler = async () =>{
+
+
+  
+  const logouthandler = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/logout`);
-      if (response?.data?.success){
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/logout`,{withCredentials:true}
+      );
+      if (response?.data?.success) {
         dispatch(getUser(null));
         toast.success("LoggedOut success...");
         navigate("/");
@@ -48,11 +52,11 @@ const Header = () => {
 
   return (
     <header className="h-16 shadow-md bg-white fixed w-full z-40">
-
       <div className=" h-full container mx-auto flex items-center px-4 justify-between">
-
         <div className="text-2xl font-semibold text-red-600">
-          <Link to={"/"} className="">Shop</Link>
+          <Link to={"/"} className="">
+            Shop
+          </Link>
         </div>
 
         <div className="flex items-center w-full justify-between max-w-[35%]  sm:max-w-[40%] md:max-w-sm border rounded-full focus-within:shadow pl-2">
@@ -135,7 +139,6 @@ const Header = () => {
               </Link>
             )}
           </div>
-
         </div>
 
         <div
@@ -148,15 +151,14 @@ const Header = () => {
             <RxCross1 />
           )}
         </div>
-        
       </div>
-      
+
       {/* For mobile size */}
 
       <div className="flex sm:hidden">
         {!rotate && (
           <div className="absolute top-[100%] right-0 w-fit  pr-4 bg-white ">
-             <div className="mt-16">
+            <div className="mt-16">
               {userdetails?._id ? (
                 <button
                   onClick={logouthandler}
@@ -164,7 +166,7 @@ const Header = () => {
                 >
                   Logout
                 </button>
-                ):(
+              ) : (
                 <Link
                   to={"/login"}
                   className="px-3 py-[2px] rounded-full text-red-600 border-2 border-red-600 hover:bg-red-500 transition-all hover:text-white"
@@ -172,11 +174,10 @@ const Header = () => {
                   Login
                 </Link>
               )}
-             </div>
+            </div>
           </div>
         )}
       </div>
-
     </header>
   );
 };

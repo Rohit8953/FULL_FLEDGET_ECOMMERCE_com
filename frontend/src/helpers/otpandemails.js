@@ -14,7 +14,6 @@ const otpandemails = async () => {
         },
       }
     );
-    console.log("response is there", response);
     if (response.data.success) {
       toast.success(response.data.message);
     }

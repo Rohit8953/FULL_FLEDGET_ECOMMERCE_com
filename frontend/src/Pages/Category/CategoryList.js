@@ -9,7 +9,7 @@ const CategoryList=()=>{
 
     const fetchcategoryProduct=async(req,res)=>{
         try {
-            const data=await axios.get(`${process.env.REACT_APP_API_URL}/getcategory`);
+            const data=await axios.get(`${process.env.REACT_APP_API_URL}/getcategory`,{withCredentials:true});
             console.log("category list data",data.data.data);
             setcategoryProduct(data.data.data);
             setloading(false);

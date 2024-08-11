@@ -5,12 +5,14 @@ import { FaEyeSlash } from "react-icons/fa";
 import axios from 'axios';
 import {toast} from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom';
+import { Oval } from 'react-loader-spinner';
 
 const CreateNewPassword = () => {
   
   const [showConfirmPassword,setShowConfirmPassword]=useState(true)
   const [shownewPassword,setShownewPassword]=useState(true)
   const [data,setdata]=useState({newpassword:'',confirmPassword:''})
+  const [loader,setloader]=useState(false)
   
   const navigate=useNavigate()
 
@@ -27,18 +29,18 @@ const CreateNewPassword = () => {
 
   const submithandler=async()=>{
     try {
-      console.log("data",data);
+      setloader(true)
       const response=await axios.post(`${process.env.REACT_APP_API_URL}/updatePassword`,data,{withCredentials:true})
-      console.log("response is",response);
       if (response.data.success){
-          toast.success(response.data.message);
+          toast.success(response?.data?.message);
           navigate('/login')
       }
+      setloader(false)
     }catch(error){
       toast.error(error?.response?.data?.message);
+      setloader(false)
     }
   }
-
   return (
     <section className=' bg-slate-100 p-4 w-full min-h-screen flex items-center -mt-10'>
       <div className='bg-white p-5 w-full max-w-sm mx-auto relative  flex flex-col gap-6 rounded-md'>
@@ -111,7 +113,16 @@ const CreateNewPassword = () => {
           </div>
 
         <div className='mx-auto'>
-            <button onClick={submithandler} className='bg-red-500 hover:bg-red-700 text-white px-16 py-2 w-fit rounded-md hover:scale-110 transition-all  block mt-6'>Save</button>
+            <button onClick={submithandler} className='bg-red-500 flex items-center justify-center gap-1 hover:bg-red-700 text-white px-16 py-2 w-fit rounded-md hover:scale-110 transition-all mt-6'>
+              <p className='font-semibold'>Save</p>
+              <div className="mt-1">
+                  {
+                    loader &&(
+                      <Oval visible={true} height="14" width="14" strokeWidth="10" color="#fff" secondaryColor="#fff" ariaLabel="oval-loading"/>
+                    )
+                  }
+                </div>
+            </button>
         </div>
 
       </div>

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {  useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import VerticalCard from "../Components/VerticalCard";
-import { productCategory} from "../helpers/Constant";
+import { productCategory } from "../helpers/Constant";
 import axios from "axios";
 
-const CategoryProduct=()=>{
-
+const CategoryProduct = () => {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -13,20 +12,26 @@ const CategoryProduct=()=>{
   const [sortBy, setSortBy] = useState("");
 
   const location = useLocation();
-  console.log("category form location--->>>",location.search.split("=")[1]);
-  const initialCategory=location.search.split("=")[1];
-  const [categoryArray,setcategoryArray]=useState([initialCategory]);
- 
+  const initialCategory = location.search.split("=")[1];
+  const [categoryArray, setcategoryArray] = useState([initialCategory]);
+
   const fetchData = async () => {
-    setLoading(true)
-    const response=await axios.post(`${process.env.REACT_APP_API_URL}/filterproduct`,{
-      category:categoryArray
-    },{
-      withCredentials:true
-    });
-    console.log("response is there",response)
-    setData(response.data.categoryProduct||[]);
-    setLoading(false)
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/filterproduct`,
+        {
+          category: categoryArray,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      setData(response.data.categoryProduct || []);
+      setLoading(false);
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
   const handleSelectCategory = (e) => {
@@ -41,26 +46,21 @@ const CategoryProduct=()=>{
 
   useEffect(() => {
     fetchData();
-  },[categoryArray]);
-
-  console.log("selectcategory---",selectCategory);
+  }, [categoryArray]);
 
   useEffect(() => {
-    for(let key in selectCategory){
-      if (selectCategory[key]&& !categoryArray.includes(key)) {
-        setcategoryArray((prev)=>{
-          return [...prev,key]
-        });        
+    for (let key in selectCategory) {
+      if (selectCategory[key] && !categoryArray.includes(key)) {
+        setcategoryArray((prev) => {
+          return [...prev, key];
+        });
       }
-     }
+    }
   }, [selectCategory]);
-
-  console.log("aksdff------?>>???",categoryArray)
 
   const handleOnChangeSortBy = (e) => {
     const { value } = e.target;
     setSortBy(value);
-
     if (value === "asc") {
       setData((preve) => preve.sort((a, b) => a.sellingPrice - b.sellingPrice));
     }
@@ -70,14 +70,11 @@ const CategoryProduct=()=>{
     }
   };
 
-   useEffect(() => {
-      
-   },[sortBy]);
+  useEffect(() => {}, [sortBy]);
   return (
     <div className="container mx-auto p-4">
       {/***desktop version */}
       <div className="flex sm:flex-row flex-col sm:gap-10">
-
         {/***left side */}
 
         <div className="bg-white p-2 w-full sm:w-[40%] md:w-[30%] lg:w-[20%] min-h-[calc(100vh-120px)] overflow-y-scroll">
@@ -92,18 +89,20 @@ const CategoryProduct=()=>{
                 <input
                   type="radio"
                   name="sortBy"
-                  checked={sortBy==="asc"}
+                  checked={sortBy === "asc"}
                   onChange={handleOnChangeSortBy}
                   value={"asc"}
                 />
-                <label className=" whitespace-nowrap">Price - Low to High</label>
+                <label className=" whitespace-nowrap">
+                  Price - Low to High
+                </label>
               </div>
 
               <div className="flex items-center gap-3">
                 <input
                   type="radio"
                   name="sortBy"
-                  checked={sortBy==='dsc'}
+                  checked={sortBy === "dsc"}
                   onChange={handleOnChangeSortBy}
                   value={"dsc"}
                 />
@@ -118,14 +117,13 @@ const CategoryProduct=()=>{
               Category
             </h3>
             <form className="text-sm flex flex-col gap-2 py-2">
-              {
-               productCategory.map((categoryName,index)=>{
+              {productCategory.map((categoryName, index) => {
                 return (
                   <div key={index} className="flex items-center gap-3">
                     <input
                       type="checkbox"
                       name={"category"}
-                     checked={selectCategory?.categoryName}
+                      checked={selectCategory?.categoryName}
                       value={categoryName?.value}
                       id={categoryName?.value}
                       onChange={handleSelectCategory}
@@ -135,8 +133,7 @@ const CategoryProduct=()=>{
                     </label>
                   </div>
                 );
-              })
-              }
+              })}
             </form>
           </div>
         </div>

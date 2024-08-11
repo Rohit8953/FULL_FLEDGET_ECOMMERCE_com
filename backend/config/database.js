@@ -3,8 +3,9 @@ require('dotenv').config();
 
   const connection=()=>{
     mongoose.connect(process.env.DATABASE_URL,{
-      useNewUrlParser:true,
-      useUnifiedTopology:true
+      useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000, 
     })
     .then(()=>{console.log("db connection successfyll----")})
     .catch((err)=>{

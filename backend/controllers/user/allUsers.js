@@ -8,8 +8,6 @@ exports.allusers=async(req,res)=>{
             success : true,
             error : false
         })
-
-
     } catch (error) {
        console.log("Error aya hai during fetching all users",error)     
     }

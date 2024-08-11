@@ -3,8 +3,10 @@ require('dotenv').config();
 
 exports.Auth=async(req, res, next) =>{
     try {
-        const token = req.cookies.token;
-        console.log('auth token is ',token)
+        console.log("req",req)
+        const token = req.cookies.Token || req.headers.Token;
+        console.log('auth token is there ',token)
+
         if (!token || token===undefined) {
             return res.status(401).json({
                 success: false,
@@ -13,7 +15,7 @@ exports.Auth=async(req, res, next) =>{
         }
 
         try {
-            const decode = await jwt.verify(token, process.env.TOKEN_SECRET);
+            const decode = await jwt.verify(token, process.env.JWT_TOKEN_SECRET);
             req.User = decode.id;
         } catch (error) {
             console.log("Error during token verification",error);

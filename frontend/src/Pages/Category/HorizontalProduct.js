@@ -23,12 +23,16 @@ const HorizontalProduct = ({category,heading}) => {
     // }
 
     const fetchData = async() =>{
-        setLoading(true)
-        const categoryProduct = await axios.post(`${process.env.REACT_APP_API_URL}/getCategoryWiseProduct`,{category})
-        setLoading(false)
-
-        console.log("horizontal data",categoryProduct.data)
-        setData(categoryProduct?.data?.data)
+        try {
+            setLoading(true)
+            const categoryProduct = await axios.post(`${process.env.REACT_APP_API_URL}/getCategoryWiseProduct`,{category},{withCredentials:true})
+            if (categoryProduct?.data?.success){
+                setData(categoryProduct?.data?.data);
+            }
+            setLoading(false)
+        } catch (error) {
+            console.log("error accured",error)
+        }
     }
 
     useEffect(()=>{

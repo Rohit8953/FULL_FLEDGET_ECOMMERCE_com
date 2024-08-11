@@ -8,14 +8,14 @@ import { useDispatch } from "react-redux";
 import { getUser } from "../Redux/useSlice";
 import uploadImage from "../helpers/uploadImageOnc";
 import { FaRegCircleUser } from "react-icons/fa6";
-// import { FcGoogle } from "react-icons/fc";
-// import { FaGithub } from "react-icons/fa6";
+import {Oval} from 'react-loader-spinner'
 
 const LogInSignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loginhai, setloginhai] = useState(false);
   const dispatch = useDispatch();
+  const [loader,setloader]=useState(false);
 
   const [data, setData] = useState({
     email: "",
@@ -27,7 +27,6 @@ const LogInSignIn = () => {
 
   const navigate = useNavigate();
   const handleOnChange = (e) => {
-
     const { name, value } = e.target;
     console.log("value is ", value);
     if (value) {
@@ -39,12 +38,13 @@ const LogInSignIn = () => {
       });
     }
   };
-  
+
   const submithandler = async (e) => {
     e.preventDefault();
     if (loginhai) {
       //signIn code
       try {
+        setloader(true)
         const res = await axios.post(
           `${process.env.REACT_APP_API_URL}/signup`,
           data,
@@ -56,20 +56,27 @@ const LogInSignIn = () => {
           }
         );
         setloginhai(false);
+        setloader(false)
       } catch (error) {
+        setloader(false)
         console.log("Error during signUp-->", error);
         toast.error(error?.response?.data?.message);
       }
     } else {
-      //login Code
-     
+      //login Code----
       try {
-        const res = await axios.post(`${process.env.REACT_APP_API_URL}/login`,data, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        });
+        setloader(true)
+        const res = await axios.post(
+          `${process.env.REACT_APP_API_URL}/login`,
+          data,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+        setloader(false)
         if (res.data.success) {
           toast.success(res.data.message);
           console.log("responsen data", res.data.user);
@@ -78,8 +85,9 @@ const LogInSignIn = () => {
           navigate("/");
         }
       } catch (error) {
-          console.log("Error found during the Login", error);
-          toast.error(error?.response?.data?.message);
+        setloader(false)
+        console.log("Error found during the Login", error);
+        toast.error(error?.response?.data?.message);
       }
     }
   };
@@ -87,7 +95,6 @@ const LogInSignIn = () => {
   const handleUploadFile = async (e) => {
     const file = e.target.files[0];
     const uploadImageCloudinary = await uploadImage(file);
-    console.log("file uploaded on cloudinary--->", uploadImageCloudinary.url);
     const URLS = uploadImageCloudinary.url;
     setData((prev) => ({
       ...prev,
@@ -133,7 +140,7 @@ const LogInSignIn = () => {
             )}
           </div>
 
-          <form  className="pt-6 flex flex-col gap-2">
+          <form className="pt-6 flex flex-col gap-2">
             {loginhai && (
               <div className="grid">
                 <div className="relative">
@@ -198,7 +205,7 @@ const LogInSignIn = () => {
                   className="cursor-pointer text-xl my-auto  absolute right-0 top-3"
                   onClick={() => setShowPassword((preve) => !preve)}
                 >
-                  <span>{showPassword?<FaEyeSlash /> : <FaEye />}</span>
+                  <span>{showPassword ? <FaEyeSlash /> : <FaEye />}</span>
                 </div>
               </div>
             </div>
@@ -234,19 +241,37 @@ const LogInSignIn = () => {
             )}
 
             <div className="flex flex-row justify-between items-center">
-              <button onClick={submithandler} className="bg-red-500 hover:bg-red-700 text-white px-6 py-2 w-fit rounded-md hover:scale-110 transition-all  block mt-6">
-                 {loginhai?(<p>SignUp</p>):(<p>Login</p>)}
+
+              <button
+                onClick={submithandler}
+                className="flex flex-row items-center gap-1 bg-red-500 hover:bg-red-700 text-white  px-6 py-2 w-fit rounded-md hover:scale-110 transition-all mt-6"
+              >
+                <div className="font-semibold">
+                  {
+                    loginhai ? <p>SignUp</p> : <p>Login</p>
+                  }
+                </div>
+                <div className="mt-1">
+                  {
+                    loader &&(
+                      <Oval visible={true} height="14" width="14" strokeWidth="10" color="#fff" secondaryColor="#fff" ariaLabel="oval-loading"/>
+                    )
+                  }
+                </div>
+
               </button>
+
               <div>
-                {
-                  !loginhai&&(
-                        <Link to='/forgotPassword' className="mt-5 text-red-500 hover:underline transition-all delay-200">Forgot your password</Link>
-                  )
-                }
+                {!loginhai && (
+                  <Link
+                    to="/forgotPassword"
+                    className="mt-5 text-red-500 hover:underline transition-all delay-200"
+                  >
+                    Forgot your password
+                  </Link>
+                )}
               </div>
-
             </div>
-
 
             {/* <div className="w-full mt-5">
               {!loginhai && (
@@ -267,9 +292,7 @@ const LogInSignIn = () => {
                 </div>
               )}
             </div> */}
-
           </form>
-
 
           <p className="my-5">
             {loginhai ? (

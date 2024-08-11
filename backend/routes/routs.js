@@ -24,40 +24,35 @@ const { makepayment } = require('../controllers/addtocart/makepayments');
 const { deleteProduct } = require('../controllers/Product/deleteProduct');
 const { genrateOtp, checkotp, updatePassword, otpandemailing } = require('../controllers/user/Otp');
 
-
-//user----------------->>>>>>>>>>>>>
 router.post('/signup',signup);
 router.post('/login',login);
-router.get('/logout',logout);
-router.get('/allusers',Auth,allusers, (req,res)=>{
+router.get('/logout',Auth,logout);
+router.get('/allusers',allusers, (req,res)=>{
     return res.json({
         success:true,
         message:'👍👍👍👍👍'
     })
 });
-router.post('/updateRole',Auth,updatuser, (req,res)=>{
+router.post('/updateRole',updatuser, (req,res)=>{
     return res.json({
         success:true,
         message:'👍👍👍👍👍'
     })
 });
-
-
 //Product------->>>>>>>>>>>>>>>>>>>>
-
-router.post('/uploadProduct',Auth,uploadproduct,(req,res)=>{
+router.post('/uploadProduct',uploadproduct,(req,res)=>{
     return res.json({
         success:true,
         message:'👍👍👍👍👍'
     })
 });
-router.get('/allproducts',Auth,allproducts,(req,res)=>{
+router.get('/allproducts',allproducts,(req,res)=>{
     return res.json({
         success:true,
         message:'👍👍👍👍👍'
     })
 });
-router.post('/updatedproduct',Auth,updateproduct,(req,res)=>{
+router.post('/updatedproduct',updateproduct,(req,res)=>{
     return res.json({
         success:true,
         message:'👍👍👍👍👍'

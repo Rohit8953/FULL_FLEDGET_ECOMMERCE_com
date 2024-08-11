@@ -1,5 +1,3 @@
-// export const USER_API_=`${window.location.origin}/api/v1`;
-
 
 export const productCategory = [
     { id : 1, label : "Airpodes", value : "airpodes"},

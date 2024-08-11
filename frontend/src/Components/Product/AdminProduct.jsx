@@ -6,6 +6,7 @@ import { MdDelete } from "react-icons/md";
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import {getrefresher} from '../../Redux/productSlice';
+import toast from 'react-hot-toast';
 
 const AdminProduct=(datas)=>{
     
@@ -16,18 +17,23 @@ const AdminProduct=(datas)=>{
     console.log("data from adminproduct is",data._id)
 
     const deletehandler=async(req,res)=>{
-          const response=await axios.post(`${process.env.REACT_APP_API_URL}/product-delete`,{id});
-          console.log("deleted product is there",response);
+      try {
+        const response=await axios.post(`${process.env.REACT_APP_API_URL}/product-delete`,{id},{withCredentials:true});
+        console.log("deleted product is there",response);
 
-          if (response.data.success){
-            dispatch(getrefresher());
-          }
+        if (response.data.success){
+          dispatch(getrefresher());
+          toast.success(response.data.message);
+        }
+      } catch (error) {
+        console.log("error",error);
+        
+      }
     }  
 
   return (
     <div className='bg-slate-200 p-2 rounded-lg'>
        <div className='w-40 flex flex-col'>
-             
             <div className='w-full h-40 flex justify-center items-center'>
               <img src={data?.productImage[0]} className='mx-auto object-fill h-full rounded-t-lg mix-blend-multiply'/>   
             </div> 
@@ -53,7 +59,6 @@ const AdminProduct=(datas)=>{
             <AdminEditProduct id={id} productData={data} onClose={()=>setEditProduct(false)} />
           )
         }
-
     </div>
   )
 }

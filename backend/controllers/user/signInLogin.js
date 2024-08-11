@@ -7,7 +7,6 @@ require("dotenv").config();
 exports.signup = async (req, res) => {
     try {
         const { name, email, password, confirmPassword, profilePic} = req.body;
-
         if (!name || !email || !password || !confirmPassword) {
             return res.status(401).json({
                 success: false,
@@ -80,7 +79,6 @@ exports.login = async (req, res) => {
             })
         }
         const ismatch = await bcrypt.compare(password, exist_user.password);
-        console.log("passwrodddddd",ismatch)
         if (!ismatch) {
             return res.status(404).json({
                 success: false,
@@ -88,27 +86,23 @@ exports.login = async (req, res) => {
             })
         }
         try {
-            const tokendata = {
+            const data = {
                 userId: exist_user._id,
                 name: exist_user.name,
                 email: exist_user.email,
                 password: exist_user.password
             }
-            const token = await jwt.sign(tokendata, process.env.TOKEN_SECRET, { expiresIn: "2d" });
 
-            console.log("your token is-->", token);
-
-            res.status(201).cookie("token", token, {
+            const Token=await jwt.sign(data, process.env.JWT_TOKEN_SECRET, { expiresIn: "1d" });
+            console.log("token from signin", Token);
+            res.status(201).cookie("Token", Token,{
                 httpOnly: true,
                 expiresIn: "2d",
-                sameSite: 'Strict',
                 success: true
             });
         } catch (error) {
             console.log(error);
         }
-
-        console.log(User);
         return res.status(201).json({
             success: true,
             user: exist_user,

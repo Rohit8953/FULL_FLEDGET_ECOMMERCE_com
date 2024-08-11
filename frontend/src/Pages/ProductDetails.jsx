@@ -32,20 +32,22 @@ const ProductDetails = () => {
   const [zoomImage, setZoomImage] = useState(false);
 
   const fetchProductDetails = async () => {
-    setLoading(true);
-    const response = await axios.get(`${process.env.REACT_APP_API_URL}/product/${id}`);
-    console.log("Product details is", response);
-    console.log("Product details is", response.data.details.category, id);
-    setLoading(false);
-    setData(response?.data?.details);
-    setActiveImage(response?.data?.details?.productImage[0]);
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/product/${id}`,{withCredentials:true}
+      );
+      setLoading(false);
+      setData(response?.data?.details);
+      setActiveImage(response?.data?.details?.productImage[0]);
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
   useEffect(() => {
     fetchProductDetails();
   }, [id]);
-
-  // console.log("product category is there",data.category);
   const handleMouseEnterProduct = (imageURL) => {
     setActiveImage(imageURL);
   };
@@ -68,14 +70,10 @@ const ProductDetails = () => {
     setZoomImage(false);
   };
 
-  // console.log("Prodcut category is ",data.category);
-
   const handleAddToCart = async (e, id) => {
     if (!user) {
-      console.log("hello ji....");
       navigate("/login");
-    }
-    else{
+    } else {
       const addtocartproducts = await addtocart(userId, id);
       console.log("Add to cart product are", addtocartproducts);
       dispatch(getrefresher());
@@ -84,10 +82,8 @@ const ProductDetails = () => {
 
   const handleBuyProduct = async (e, id) => {
     if (!user) {
-      console.log("hello ji....");
       navigate("/login");
-    }
-    else{
+    } else {
       await addtocart(userId, id);
       navigate("/cart");
     }
@@ -99,12 +95,18 @@ const ProductDetails = () => {
         {/***product Image */}
         <div className="h-96 flex flex-col lg:flex-row-reverse gap-4">
           <div className="h-[300px] w-[300px] lg:h-96 lg:w-96 bg-slate-200 relative p-2">
-            <img
-              src={activeImage}
-              className="h-full w-full object-scale-down mix-blend-multiply"
-              onMouseMove={handleZoomImage}
-              onMouseLeave={handleLeaveImageZoom}
-            />
+            {
+              loading?(
+                <div className="w-full h-full bg-slate-200 animate-pulse"></div>
+              ):(
+                <img
+                  src={activeImage}
+                  className="h-full w-full object-scale-down mix-blend-multiply"
+                  onMouseMove={handleZoomImage}
+                  onMouseLeave={handleLeaveImageZoom}
+                />
+              )
+            }
             {/**product zoom */}
             {zoomImage && (
               <div className="hidden lg:block absolute min-w-[500px] overflow-hidden min-h-[400px] bg-slate-200 p-1 -right-[510px] top-0">
@@ -189,7 +191,6 @@ const ProductDetails = () => {
               {data?.productName}
             </h2>
             <p className="capitalize text-slate-400">{data?.category}</p>
-
             <div className="text-red-600 flex items-center gap-1">
               <FaStar />
               <FaStar />

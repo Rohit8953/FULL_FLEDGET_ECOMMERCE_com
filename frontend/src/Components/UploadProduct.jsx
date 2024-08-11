@@ -1,36 +1,37 @@
 import React, { useState } from "react";
-import toast from 'react-hot-toast'
+import toast from "react-hot-toast";
 import { MdDelete } from "react-icons/md";
 import { CgClose } from "react-icons/cg";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import {USER_API_, productCategory} from '../helpers/Constant'
+import { USER_API_, productCategory } from "../helpers/Constant";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import uploadImage from '../helpers/uploadImageOnc'
+import uploadImage from "../helpers/uploadImageOnc";
 import { getrefresher } from "../Redux/productSlice";
+import { Oval } from "react-loader-spinner";
 
-const UploadProduct=({onClose})=>{
-    const user=useSelector(store=>store.userdetails.user);
-    const id=user?._id;
-    console.log("user is from upload user",user,id);
-    const usedispatch=useDispatch();
+const UploadProduct = ({ onClose }) => {
+  const user = useSelector((store) => store.userdetails.user);
+  const id = user?._id;
+  const usedispatch = useDispatch();
+  const[loader,setloader]=useState(false);
 
-    const [data, setData] = useState({
-        productName: "",
-        brandName: "",
-        category: "",
-        productImage: [],
-        description: "", 
-        price: "",
-        sellingPrice: "",
+  const [data, setData] = useState({
+    productName: "",
+    brandName: "",
+    category: "",
+    productImage: [],
+    description: "",
+    price: "",
+    sellingPrice: "",
   });
 
   const [openFullScreenImage, setOpenFullScreenImage] = useState(false);
   const [fullScreenImage, setFullScreenImage] = useState("");
-  const [uploadProductImage,setuploadProductImage]=useState("");
+  const [uploadProductImage, setuploadProductImage] = useState("");
 
   const handleOnChange = (e) => {
-    const { name,value} = e.target;
+    const { name, value } = e.target;
 
     setData((preve) => {
       return {
@@ -40,12 +41,12 @@ const UploadProduct=({onClose})=>{
     });
   };
 
-  const handleUploadProduct=async(e)=>{
+  const handleUploadProduct = async (e) => {
     const file = e.target.files[0];
     const uploadImageCloudinary = await uploadImage(file);
-    console.log("file uploaded on cloudinary--->",uploadImageCloudinary);
-    setData((preve)=>{
-      return { 
+    console.log("file uploaded on cloudinary--->", uploadImageCloudinary);
+    setData((preve) => {
+      return {
         ...preve,
         productImage: [...preve.productImage, uploadImageCloudinary.url],
       };
@@ -71,30 +72,30 @@ const UploadProduct=({onClose})=>{
   }
 
   const handleSubmit = async (e) => {
-    console.log("ROHITTTT---JI---")
+    setloader(false)
     e.preventDefault();
-
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/uploadProduct`,{...data,id:user?._id},{
-          withCredentials:true
-      })
-      console.log("Uploaded Product is here",response);
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/uploadProduct`,
+        { ...data, id: user?._id },
+        {
+          withCredentials: true,
+        }
+      );
       usedispatch(getrefresher());
+      setloader(true)
       if (response?.data?.success){
         toast.success(response?.data?.message);
-        console.log(response?.data?.message);
         onClose();
-      }  
+      }
     } catch (error) {
-        console.log("error",error)
-        toast.error(error?.response?.message);
+      console.log("error", error);
+      toast.error(error?.response?.message);
     }
-    
-
-}
+  };
 
   return (
-    <div className="fixed w-full  h-full bg-slate-200  top-0 left-0 right-0 bottom-0 flex justify-center items-center">
+    <div className="fixed w-full  h-full bg-slate-200 bg-opacity-90  top-0 left-0 right-0 bottom-0 flex justify-center items-center">
       <div className="bg-white p-4 rounded w-full max-w-2xl h-full max-h-[80%] overflow-hidden">
         <div className="flex justify-between items-center pb-3">
           <h2 className="font-bold text-lg">Upload Product</h2>
@@ -170,7 +171,7 @@ const UploadProduct=({onClose})=>{
                   type="file"
                   id="uploadImageInput"
                   className="hidden"
-                   onChange={handleUploadProduct}
+                  onChange={handleUploadProduct}
                 />
               </div>
             </div>
@@ -250,8 +251,15 @@ const UploadProduct=({onClose})=>{
             value={data.description}
           ></textarea>
 
-          <button className="px-3 py-2 bg-red-600 text-white mb-10 hover:bg-red-700">
-            Upload Product
+          <button className="px-3 py-2 bg-red-600 text-white mb-10 hover:bg-red-700 flex items-center justify-center gap-1">
+            <p className="font-semibold">Upload Product</p>
+            <div className="mt-1">
+                  {
+                    loader &&(
+                      <Oval visible={true} height="14" width="14" strokeWidth="10" color="#fff" secondaryColor="#fff" ariaLabel="oval-loading"/>
+                    )
+                  }
+                </div>
           </button>
         </form>
       </div>
@@ -264,7 +272,7 @@ const UploadProduct=({onClose})=>{
         />
       )} */}
     </div>
-  )
-}
+  );
+};
 
 export default UploadProduct;

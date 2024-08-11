@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import { MdAttachEmail } from "react-icons/md";
-import axios from "axios"
+import axios from "axios";
 import toast from "react-hot-toast";
 import otpandemails from "../helpers/otpandemails";
-
+import { Oval } from "react-loader-spinner";
 const VerifyCode = () => {
   const [otp, setotp] = useState(new Array(4).fill(""));
   const [combineotp, setcombineotp] = useState();
@@ -13,7 +13,7 @@ const VerifyCode = () => {
   const navigate = useNavigate();
   const [second, setsecond] = useState(59);
   const [minute, setminut] = useState(1);
-
+  const [loader,setloader]=useState(false);
   useEffect(() => {
     if (useref.current[0]) {
       useref.current[0].focus();
@@ -61,7 +61,7 @@ const VerifyCode = () => {
 
   const submithandler = async () => {
     try {
-      console.log(combineotp);
+      setloader(true);
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/verifyotp`,
         { otp: combineotp },
@@ -69,20 +69,20 @@ const VerifyCode = () => {
           withCredentials: true,
         }
       );
-      console.log("response is", response);
-
-      if (response?.data?.success) {
+      setloader(false)
+      if (response?.data?.success){
         toast.success(response?.data?.message);
         navigate("/newpassword");
       }
     } catch (error) {
       toast.error(error?.response?.data?.message);
+      setloader(false)
     }
   };
 
   const clickhandler = async () => {
     const result = await otpandemails();
-    console.log("result is there", result);
+    useref.current[0].focus();
     setsecond(59);
     setminut(1);
   };
@@ -144,9 +144,16 @@ const VerifyCode = () => {
         <div className="mx-auto">
           <button
             onClick={submithandler}
-            className="bg-red-500 hover:bg-red-700 text-white px-16 py-2 w-fit rounded-md hover:scale-110 transition-all  block mt-6"
+            className="bg-red-500 flex items-center justify-center gap-1 hover:bg-red-700 text-white px-16 py-2 w-fit rounded-md hover:scale-110 transition-all mt-6"
           >
-            Verify
+            <p className="font-semibold">Verify</p>
+            <div className="mt-1">
+                  {
+                    loader && (
+                      <Oval visible={true} height="14" width="14" strokeWidth="10" color="#fff" secondaryColor="#fff" ariaLabel="oval-loading"/>
+                    )
+                  }
+                </div>
           </button>
         </div>
       </div>

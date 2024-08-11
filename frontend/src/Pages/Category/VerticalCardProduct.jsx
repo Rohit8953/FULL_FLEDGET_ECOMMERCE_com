@@ -10,10 +10,16 @@ const VerticalCardProduct=({category,heading})=>{
     const loadingList = new Array(13).fill(null)
     const scrollElement = useRef()
     const fetchData = async() =>{
-        setLoading(true)
-        const categoryProduct = await axios.post(`${process.env.REACT_APP_API_URL}/getCategoryWiseProduct`,{category})
-        setLoading(false)
-        setData(categoryProduct?.data?.data)
+        try {
+            setLoading(true)
+            const categoryProduct = await axios.post(`${process.env.REACT_APP_API_URL}/getCategoryWiseProduct`,{category},{withCredentials:true})
+            setLoading(false)
+            if (categoryProduct.data.success){
+                setData(categoryProduct?.data?.data)
+            }
+        } catch (error) {
+            console.log("error occured",error);
+        }
     }
     useEffect(()=>{
         fetchData()

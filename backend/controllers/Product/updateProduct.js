@@ -4,8 +4,9 @@ exports.updateproduct=async(req,res)=>{
     try {
         const{id,data,userId}=req.body;
         const user = await User.findById(userId)
-        console.log("user is ",user);
-        if(user?.role === 'admin'){
+        console.log("User role is there",user?.role);
+        
+        if(user?.role!=='admin'){
             return res.status(401).json({
                 success:false,
                 message:'user is not admin'

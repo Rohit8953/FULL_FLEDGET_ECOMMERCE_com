@@ -26,7 +26,7 @@ exports.genrateOtp = async (req, res) =>{
          const data={
              email:email,
          }      
-         const otpToken = await jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "1d" });
+         const otpToken = await jwt.sign(data, process.env.JWT_TOKEN_SECRET, { expiresIn: "1d" });
          console.log("your token is--> You can see fffsefgsdfg", otpToken);
          res.status(201).cookie("otpToken", otpToken,{
              expiresIn: "2d",
@@ -75,7 +75,7 @@ exports.otpandemailing=async(req,res)=>{
             });
         }
         try {
-               var decode = await jwt.verify(token, process.env.TOKEN_SECRET);
+               var decode = await jwt.verify(token, process.env.JWT_TOKEN_SECRET);
                console.log("Decoded data is there", decode);
                req.User = decode.id;
          } catch (error) {
@@ -112,14 +112,13 @@ exports.otpandemailing=async(req,res)=>{
         })
          
        } catch (error) {
-          console.log("error aya hai",error);
+          console.log("errors",error);
           return res.status(500).json({
             success:false,
             message:'error'
         })
        }
 }
-
 
 exports.checkotp=async(req,res)=>{
    try {
@@ -184,7 +183,7 @@ exports.updatePassword=async(req,res)=>{
             });
         }
         try {
-               var decode = await jwt.verify(token, process.env.TOKEN_SECRET);
+               var decode = await jwt.verify(token, process.env.JWT_TOKEN_SECRET);
                console.log("Decoded data is there", decode);
                req.User = decode.id;
          } catch (error) {

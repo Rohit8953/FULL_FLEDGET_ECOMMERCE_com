@@ -5,14 +5,19 @@ import { MdAttachEmail } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import getotp from "../helpers/getotp";
 import otpandemails from "../helpers/otpandemails";
+import { Oval } from "react-loader-spinner";
 
 const ForgotPassword = () => {
   const [data, setdata] = useState({ email: "" });
+  const [loader,setloader]=useState(false)
+
   const navigate = useNavigate();
 
-  const clickhandler = async () => {
+  const clickhandler=async()=>{
+    setloader(true);
     const result = await getotp(data);
     await otpandemails();
+    setloader(false)
     navigate("/verifycode");
   };
 
@@ -24,8 +29,6 @@ const ForgotPassword = () => {
       };
     });
   };
-
-  console.log("email is here", data);
 
   return (
     <section className=" bg-slate-100 w-full px-4 min-h-screen flex items-center -mt-10">
@@ -68,9 +71,16 @@ const ForgotPassword = () => {
         <div className="mx-auto">
           <button
             onClick={clickhandler}
-            className="bg-red-500 hover:bg-red-700 text-white px-16 py-2 w-fit rounded-md hover:scale-110 transition-all  block mt-6"
+            className="bg-red-500 flex items-center justify-center gap-1 hover:bg-red-700 text-white px-16 py-2 w-fit rounded-md hover:scale-110 transition-all mt-6"
           >
-            Send
+            <div className="font-semibold">Send</div>
+            <div className="mt-[2px]">
+                  {
+                    loader &&(
+                      <Oval visible={true} height="14" width="14" strokeWidth="10" color="#fff" secondaryColor="#fff" ariaLabel="oval-loading"/>
+                    )
+                  }
+            </div>
           </button>
         </div>
       </div>
