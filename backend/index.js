@@ -22,7 +22,7 @@ app.use(
 app.use(cookieParser());
 
 const corsOption = {
-  origin: ["http://localhost:3000", "full-fledget-ecommerce-com-6svy.vercel.app", "https://full-fledget-ecommerce-com.vercel.app"],
+  origin: "full-fledget-ecommerce-com-6svy.vercel.app",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
