@@ -26,7 +26,7 @@ const { genrateOtp, checkotp, updatePassword, otpandemailing } = require('../con
 
 router.post('/signup',signup);
 router.post('/login',login);
-router.get('/logout',Auth,logout);
+router.get('/logout',logout);
 router.get('/allusers',allusers, (req,res)=>{
     return res.json({
         success:true,
