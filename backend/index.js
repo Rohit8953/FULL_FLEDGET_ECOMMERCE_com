@@ -37,18 +37,7 @@ app.use(cors(corsOption));
 const routs = require("./routes/routs");
 app.use("/api/v1", routs);
 
-
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, PATCH, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next();
-});
-
+app.options('*', cors(corsOption));
 
 app.listen(porthai, () => {
   console.log(`app listening on port no..http://localhost:${porthai}`);
