@@ -30,7 +30,6 @@ const corsOption = {
   origin: "https://full-fledget-ecommerce-com-6svy.vercel.app",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
-  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(cors(corsOption));
